@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   View,
   Picker,
   Text,
@@ -22,16 +21,6 @@ async function getI18NFromApi(url) {
 
 const styles = selectionStyles
 
-/* function timeout(ms, promise) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      reject(new Error("timeout"))
-    }, ms)
-    promise.then(resolve, reject)
-  })
-} */
-
-
 class Selection extends Component {
 
 
@@ -52,13 +41,7 @@ class Selection extends Component {
       }).then(() => console.log(this.state.APIresponse))
   }
 
-  /* componentDidMount() {
-    timeout(30000, getI18NFromApi(this.URL)).then(function (response) {
-      this.setState({ APIresponse: response, isFetching: false })
-    }).catch(function (error) {
-      // might be a timeout error
-    })
-  } */
+
   render() {
     if (this.state.isFetching) {
       return (
@@ -75,11 +58,7 @@ class Selection extends Component {
           <View style={styles.header} />
           <Text style={styles.text}>Selecione o idioma</Text>
           <View style={styles.picker}>
-            <Picker
-            //selectedValue={selectedValue}
-
-            // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-            >
+            <Picker>
               <Picker.Item label="Java" value="java" />
               <Picker.Item label="JavaScript" value="js" />
             </Picker>
@@ -88,18 +67,10 @@ class Selection extends Component {
 
           <Text style={styles.text}>Selecione o módulo</Text>
           <View style={styles.picker} >
-            <Picker
-            //selectedValue={selectedValue}
-            // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-            >
+            <Picker>
               <Picker.Item label="Java" value="java" />
               <Picker.Item label="JavaScript" value="js" />
             </Picker>
-
-
-
-
-
           </View>
           <TouchableOpacity style={styles.button}>
             <Text>Pesquisar</Text>
