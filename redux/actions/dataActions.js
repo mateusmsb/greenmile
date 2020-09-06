@@ -17,7 +17,7 @@ export const fetchData = () => {
     return async dispatch => {
         dispatch(fetchingData());
         try {
-            let response = await fetch('https://api.exchangeratesapi.io/latest')
+            let response = await fetch('http://portal.greenmilesoftware.com/get_resources_since')
             let json = await response.json();
             dispatch(fetchingDataSuccess(json));
         }

@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import selectionStyles from './Styles'
+import { fetchData } from '../../redux/actions/dataActions'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 
 async function getI18NFromApi(url) {
@@ -35,15 +38,18 @@ class Selection extends Component {
   URL = 'https://api.exchangeratesapi.io/latest'
 
   componentDidMount() {
-    getI18NFromApi(this.URL)
+    /* getI18NFromApi(this.URL)
       .then(response => {
         this.setState({ APIresponse: response, isFetching: false });
-      }).then(() => console.log(this.state.APIresponse))
+      }).then(() => console.log(this.state.APIresponse)) */
+
+    this.props.fetchData();
+
   }
 
 
   render() {
-    if (this.state.isFetching) {
+    if (this.props.dataReducerP.isFetching) {
       return (
 
         <View style={styles.loading}>
@@ -77,9 +83,22 @@ class Selection extends Component {
           </TouchableOpacity>
 
         </View>
+
       )
+
     }
   }
 };
 
-export default Selection;
+Selection.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  indicador: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => {
+  return {
+    dataReducerP: state
+  };
+};
+
+export default connect(mapStateToProps, { fetchData })(Selection);
