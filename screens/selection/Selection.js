@@ -1,23 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import {
   View,
-  Picker,
   Text,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 import selectionStyles from './Styles'
 import { fetchData } from '../../redux/actions/dataActions'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import data_mock from '../../data-mock';
 import fillArray from '../../functions/fillArray'
 import fillArrayModule from '../../functions/fillArrayModule'
 
 
-const data = data_mock;
-const languageArray = [];
-const moduleArray = [1, 2, 3];
+
 
 
 const styles = selectionStyles
@@ -28,19 +25,14 @@ class Selection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      APIresponse: 'nulo'
+      moduleArray: [],
+      languageArray: []
     };
   }
 
   componentDidMount() {
-
-    fillArray(languageArray, data)
-    fillArrayModule(moduleArray, data)
-    console.log(this.props.dataReducerP)
-    console.log(languageArray)
-
+    this.props.fetchData()
   }
-
 
   render() {
     if (this.props.dataReducerP.isFetching) {
@@ -58,8 +50,11 @@ class Selection extends Component {
           <View style={styles.header} />
           <Text style={styles.text}>Selecione o idioma</Text>
           <View style={styles.picker}>
-            <Picker>
-              {languageArray.map((item, index) => {
+            <Picker
+              selectedValue={this.state.language}
+              onValueChange={(itemValue) => this.setState({ language: itemValue })}
+            >
+              {this.state.languageArray.map((item, index) => {
                 return (<Picker.Item label={item} value={item} key={index} />)
               })}
             </Picker>
@@ -68,13 +63,25 @@ class Selection extends Component {
 
           <Text style={styles.text}>Selecione o módulo</Text>
           <View style={styles.picker} >
-            <Picker>
-              {moduleArray.map((item, index) => {
+            <Picker
+              selectedValue={this.state.module}
+              onValueChange={(itemValue) => this.setState({ module: itemValue })}
+            >
+              {this.state.moduleArray.map((item, index) => {
                 return (<Picker.Item label={item} value={item} key={index} />)
               })}
             </Picker>
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              this.setState({
+                moduleArray: fillArrayModule(this.state.moduleArray, this.props.dataReducerP.data),
+                languageArray: fillArray(this.state.langaugeArray, this.props.dataReducerP.data)
+              }),
+                console.log('botao', this.props.dataReducerP.data)
+            }}
+          >
             <Text>Pesquisar</Text>
           </TouchableOpacity>
 

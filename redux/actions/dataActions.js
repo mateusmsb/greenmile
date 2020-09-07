@@ -1,4 +1,5 @@
 import { FETCHING_DATA, FETCHING_DATA_SUCCESS, FETCHING_DATA_FAILURE } from './types';
+import api from '../../services/api'
 
 export const fetchingData = () => ({ type: FETCHING_DATA });
 
@@ -17,12 +18,12 @@ export const fetchData = () => {
     return async dispatch => {
         dispatch(fetchingData());
         try {
-            let response = await fetch('https://api.exchangeratesapi.io/latest')
-            let json = await response.json();
-            dispatch(fetchingDataSuccess(json));
+            api.get('get_resources_since').then((response) => { dispatch(fetchingDataSuccess(response)) });
+            ;
         }
         catch (error) {
             dispatch(fectchingDataFailure(error));
         }
     }
 }
+
