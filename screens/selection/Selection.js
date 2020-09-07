@@ -1,36 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import {
-  StyleSheet,
   View,
-  Picker,
   Text,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 import selectionStyles from './Styles'
+import { fetchData } from '../../redux/actions/dataActions'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import fillArray from '../../functions/fillArray'
+import fillArrayModule from '../../functions/fillArrayModule'
 
 
-async function getI18NFromApi(url) {
-  try {
-    let response = await fetch(url);
-    let responseJson = await response.json();
-    return responseJson
-  } catch (error) {
-    console.log(error);
-  }
-}
+
+
 
 const styles = selectionStyles
-
-/* function timeout(ms, promise) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      reject(new Error("timeout"))
-    }, ms)
-    promise.then(resolve, reject)
-  })
-} */
-
 
 class Selection extends Component {
 
@@ -38,29 +25,17 @@ class Selection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      APIresponse: 'nulo',
-      isFetching: true
+      moduleArray: [],
+      languageArray: []
     };
   }
 
-  URL = 'https://api.exchangeratesapi.io/latest'
-
   componentDidMount() {
-    getI18NFromApi(this.URL)
-      .then(response => {
-        this.setState({ APIresponse: response, isFetching: false });
-      }).then(() => console.log(this.state.APIresponse))
+    this.props.fetchData()
   }
 
-  /* componentDidMount() {
-    timeout(30000, getI18NFromApi(this.URL)).then(function (response) {
-      this.setState({ APIresponse: response, isFetching: false })
-    }).catch(function (error) {
-      // might be a timeout error
-    })
-  } */
   render() {
-    if (this.state.isFetching) {
+    if (this.props.dataReducerP.isFetching) {
       return (
 
         <View style={styles.loading}>
@@ -76,12 +51,12 @@ class Selection extends Component {
           <Text style={styles.text}>Selecione o idioma</Text>
           <View style={styles.picker}>
             <Picker
-            //selectedValue={selectedValue}
-
-            // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+              selectedValue={this.state.language}
+              onValueChange={(itemValue) => this.setState({ language: itemValue })}
             >
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
+              {this.state.languageArray.map((item, index) => {
+                return (<Picker.Item label={item} value={item} key={index} />)
+              })}
             </Picker>
 
           </View>
@@ -89,26 +64,44 @@ class Selection extends Component {
           <Text style={styles.text}>Selecione o módulo</Text>
           <View style={styles.picker} >
             <Picker
-            //selectedValue={selectedValue}
-            // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+              selectedValue={this.state.module}
+              onValueChange={(itemValue) => this.setState({ module: itemValue })}
             >
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
+              {this.state.moduleArray.map((item, index) => {
+                return (<Picker.Item label={item} value={item} key={index} />)
+              })}
             </Picker>
-
-
-
-
-
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              this.setState({
+                moduleArray: fillArrayModule(this.state.moduleArray, this.props.dataReducerP.data),
+                languageArray: fillArray(this.state.langaugeArray, this.props.dataReducerP.data)
+              }),
+                console.log('botao', this.props.dataReducerP.data)
+            }}
+          >
             <Text>Pesquisar</Text>
           </TouchableOpacity>
 
         </View>
+
       )
+
     }
   }
 };
 
-export default Selection;
+Selection.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  dataReducerP: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => {
+  return {
+    dataReducerP: state
+  };
+};
+
+export default connect(mapStateToProps, { fetchData })(Selection);
