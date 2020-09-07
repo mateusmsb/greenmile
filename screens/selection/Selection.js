@@ -10,17 +10,15 @@ import selectionStyles from './Styles'
 import { fetchData } from '../../redux/actions/dataActions'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import data_mock from '../../data-mock';
+import fillArray from '../../functions/fillArray'
+import fillArrayModule from '../../functions/fillArrayModule'
 
 
-async function getI18NFromApi(url) {
-  try {
-    let response = await fetch(url);
-    let responseJson = await response.json();
-    return responseJson
-  } catch (error) {
-    console.log(error);
-  }
-}
+const data = data_mock;
+const languageArray = [];
+const moduleArray = [1, 2, 3];
+
 
 const styles = selectionStyles
 
@@ -30,20 +28,16 @@ class Selection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      APIresponse: 'nulo',
-      isFetching: true
+      APIresponse: 'nulo'
     };
   }
 
-  URL = 'https://api.exchangeratesapi.io/latest'
-
   componentDidMount() {
-    /* getI18NFromApi(this.URL)
-      .then(response => {
-        this.setState({ APIresponse: response, isFetching: false });
-      }).then(() => console.log(this.state.APIresponse)) */
 
-    this.props.fetchData();
+    fillArray(languageArray, data)
+    fillArrayModule(moduleArray, data)
+    console.log(this.props.dataReducerP)
+    console.log(languageArray)
 
   }
 
@@ -65,8 +59,9 @@ class Selection extends Component {
           <Text style={styles.text}>Selecione o idioma</Text>
           <View style={styles.picker}>
             <Picker>
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
+              {languageArray.map((item, index) => {
+                return (<Picker.Item label={item} value={item} key={index} />)
+              })}
             </Picker>
 
           </View>
@@ -74,8 +69,9 @@ class Selection extends Component {
           <Text style={styles.text}>Selecione o módulo</Text>
           <View style={styles.picker} >
             <Picker>
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
+              {moduleArray.map((item, index) => {
+                return (<Picker.Item label={item} value={item} key={index} />)
+              })}
             </Picker>
           </View>
           <TouchableOpacity style={styles.button}>
@@ -92,7 +88,7 @@ class Selection extends Component {
 
 Selection.propTypes = {
   fetchData: PropTypes.func.isRequired,
-  indicador: PropTypes.object.isRequired
+  dataReducerP: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
