@@ -18,7 +18,7 @@ export const fetchData = () => {
     return async dispatch => {
         dispatch(fetchingData());
         try {
-            api.get('get_resources_since').then((response) => { dispatch(fetchingDataSuccess(response)) });
+            api.get('get_resources_since').then((response) => { dispatch(fetchingDataSuccess(response.data)) });
             ;
         }
         catch (error) {

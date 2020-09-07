@@ -4,6 +4,7 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
+  FlatList
 } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import selectionStyles from './Styles'
@@ -12,6 +13,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import fillArray from '../../functions/fillArray'
 import fillArrayModule from '../../functions/fillArrayModule'
+
 
 
 
@@ -32,8 +34,8 @@ class Selection extends Component {
 
   componentDidMount() {
     this.props.fetchData()
+    console.log('did', this.props.dataReducerP.data[0])
   }
-
   render() {
     if (this.props.dataReducerP.isFetching) {
       return (
@@ -75,15 +77,28 @@ class Selection extends Component {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              this.setState({
-                moduleArray: fillArrayModule(this.state.moduleArray, this.props.dataReducerP.data),
-                languageArray: fillArray(this.state.langaugeArray, this.props.dataReducerP.data)
-              }),
-                console.log('botao', this.props.dataReducerP.data)
+              //this.setState({ languageArray: fillArray(this.languageArray, this.props.dataReducerP.data) })
+              console.log(this.props.dataReducerP.data[0].resource.value)
             }}
           >
             <Text>Pesquisar</Text>
           </TouchableOpacity>
+
+          <View style={{
+            flex: 1,
+            backgroundColor: 'white'
+
+          }}>
+            <FlatList
+              data={this.props.dataReducerP.data}
+              renderItem={
+                (item) =>
+                  <Text> {item.resource.value} </Text>
+              }
+
+            />
+            <Text>oi</Text>
+          </View>
 
         </View>
 
